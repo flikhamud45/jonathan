@@ -1,0 +1,29 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+ name: fortio-workload
+ namespace: workload
+rules:
+ - apiGroups: [ "*" ]
+   resources: [ "*" ]
+   verbs: [ "*" ]
+ - apiGroups: [ "security.openshift.io" ]
+   resources: [ "securitycontextconstraints"]
+   resourceNames: [ "nonroot" ]
+   verbs: [ "use" ]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+ name: fortio-workload
+ namespace: workload
+roleRef:
+ apiGroup: rbac.authorization.k8s.io
+ kind: ClusterRole
+ name: fortio-workload
+subjects:
+ - kind: ServiceAccount
+   name: workload
+   namespace: workload
+---
+

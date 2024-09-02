@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-servicemonitor
+  namespace: istio-system
+  labels:
+    release: istio
+spec:
+  selector:
+    matchLabels:
+      app: istio-ingressgateway
+  namespaceSelector:
+    matchNames:
+      - istio-system
+  endpoints:
+    - port: http-monitoring
+      interval: 15s

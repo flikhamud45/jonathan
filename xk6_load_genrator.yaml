@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xk6-workload
+  namespace: workload
+  labels:
+    app: workload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xk6-workload
+  template:
+    metadata:
+      labels:
+        app: xk6-workload
+    spec:
+      serviceAccountName: workload
+      securityContext:
+        runAsUser: 0
+      containers:
+        - name: workload
+          image: xk6DockerFile
+          command: ["sleep"]
+          args: ["10000000"]
+#          volumeMounts:
+#            - name: k6-scripts
+#              mountPath: /scripts
+      volumes:
+        - name: k6-scripts
+          emptyDir: {}
+      nodeSelector:
+        group: workload
+      tolerations:
+        - key: "node-role.kubernetes.io/workload"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+#      volumes:
+#        - name: server-cert
+#          secret:
+#            secretName: simulated-server-cert
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+ name: workload
+ namespace: workload
+---

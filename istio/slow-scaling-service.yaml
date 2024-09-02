@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slow-scaling-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slow-scaling
+  template:
+    metadata:
+      labels:
+        app: slow-scaling
+    spec:
+      containers:
+      - name: slow-scaling-container
+        image: your-slow-service-image  # Replace with your slow service image
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "500m"
+          limits:
+            cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: slow-scaling-service
+spec:
+  selector:
+    app: slow-scaling
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080

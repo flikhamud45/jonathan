@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fast-scaling-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fast-scaling
+  template:
+    metadata:
+      labels:
+        app: fast-scaling
+    spec:
+      containers:
+      - name: fast-scaling-container
+        image: your-fast-service-image  # Replace with your fast service image
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SLOW_SERVICE_URL
+          value: "http://slow-scaling-service:80"  # URL of the slow service
+        resources:
+          requests:
+            cpu: "100m"
+          limits:
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fast-scaling-service
+spec:
+  selector:
+    app: fast-scaling
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080

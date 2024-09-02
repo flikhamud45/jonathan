@@ -1,0 +1,16 @@
+alertmanager:
+  enabled: false
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelector:
+      matchLabels:
+        release: istio
+    additionalScrapeConfigs:
+      - job_name: 'istio-mesh'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_container_name]
+            action: keep
+            regex: 'istio-proxy'
+

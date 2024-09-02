@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortio-workload
+  namespace: workload
+  labels:
+    app: workload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fortio-workload
+  template:
+    metadata:
+      labels:
+        app: fortio-workload
+    spec:
+      serviceAccountName: workload
+      securityContext:
+        runAsUser: 0
+      containers:
+        - name: workload
+          image: yanivdocker92/fortio-load-generator:0.0.1
+          imagePullPolicy: IfNotPresent
+#          volumeMounts:
+#            - name: server-cert
+#              mountPath: /mnt/tls
+      nodeSelector:
+        group: workload
+      tolerations:
+        - key: "node-role.kubernetes.io/workload"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
+#      volumes:
+#        - name: server-cert
+#          secret:
+#            secretName: simulated-server-cert
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+ name: workload
+ namespace: workload
+---
