@@ -68,6 +68,11 @@ spec:
       labels:
         app: details
         version: v1
+      annotations:
+        sidecar.istio.io/proxyCPU: "50m"  # CPU request
+#        sidecar.istio.io/proxyMemory: "128Mi"  # Memory request
+        sidecar.istio.io/proxyCPULimit: "100m"  # CPU limit
+#        sidecar.istio.io/proxyMemoryLimit: "256Mi"  # Memory limit
     spec:
       serviceAccountName: bookinfo-details
       containers:
@@ -76,6 +81,11 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
+        resources:
+          requests:
+            cpu: "50m"  # 10 millicores (0.01 CPU)
+          limits:
+            cpu: "100m"
 ---
 ##################################################################################################
 # Ratings service
@@ -119,6 +129,11 @@ spec:
       labels:
         app: ratings
         version: v1
+      annotations:
+        sidecar.istio.io/proxyCPU: "50m"  # CPU request
+#        sidecar.istio.io/proxyMemory: "128Mi"  # Memory request
+        sidecar.istio.io/proxyCPULimit: "100m"  # CPU limit
+#        sidecar.istio.io/proxyMemoryLimit: "256Mi"  # Memory limit
     spec:
       serviceAccountName: bookinfo-ratings
       containers:
@@ -127,6 +142,11 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
+        resources:
+          requests:
+            cpu: "50m"  # 100 millicores (0.1 CPU)
+          limits:
+            cpu: "100m"  # (2 CPU)
 ---
 ##################################################################################################
 # Reviews service
@@ -170,6 +190,11 @@ spec:
       labels:
         app: reviews
         version: v1
+      annotations:
+        sidecar.istio.io/proxyCPU: "50m"  # CPU request
+#        sidecar.istio.io/proxyMemory: "128Mi"  # Memory request
+        sidecar.istio.io/proxyCPULimit: "100m"  # CPU limit
+#        sidecar.istio.io/proxyMemoryLimit: "256Mi"  # Memory limit
     spec:
       serviceAccountName: bookinfo-reviews
       containers:
@@ -186,6 +211,11 @@ spec:
           mountPath: /tmp
         - name: wlp-output
           mountPath: /opt/ibm/wlp/output
+        resources:
+          requests:
+            cpu: "50m"  # 100 millicores (0.1 CPU)
+          limits:
+            cpu: "100m"  # (2 CPU)
       volumes:
       - name: wlp-output
         emptyDir: {}
@@ -210,6 +240,11 @@ spec:
       labels:
         app: reviews
         version: v2
+      annotations:
+        sidecar.istio.io/proxyCPU: "50m"  # CPU request
+#        sidecar.istio.io/proxyMemory: "128Mi"  # Memory request
+        sidecar.istio.io/proxyCPULimit: "100m"  # CPU limit
+#        sidecar.istio.io/proxyMemoryLimit: "256Mi"  # Memory limit
     spec:
       serviceAccountName: bookinfo-reviews
       containers:
@@ -226,6 +261,11 @@ spec:
           mountPath: /tmp
         - name: wlp-output
           mountPath: /opt/ibm/wlp/output
+        resources:
+          requests:
+            cpu: "50m"  # 100 millicores (0.1 CPU)
+          limits:
+            cpu: "100m"  # (2 CPU)
       volumes:
       - name: wlp-output
         emptyDir: {}
@@ -250,6 +290,11 @@ spec:
       labels:
         app: reviews
         version: v3
+      annotations:
+        sidecar.istio.io/proxyCPU: "50m"  # CPU request
+#        sidecar.istio.io/proxyMemory: "128Mi"  # Memory request
+        sidecar.istio.io/proxyCPULimit: "100m"  # CPU limit
+#        sidecar.istio.io/proxyMemoryLimit: "256Mi"  # Memory limit
     spec:
       serviceAccountName: bookinfo-reviews
       containers:
@@ -266,6 +311,11 @@ spec:
           mountPath: /tmp
         - name: wlp-output
           mountPath: /opt/ibm/wlp/output
+        resources:
+          requests:
+            cpu: "50m"  # 100 millicores (0.1 CPU)
+          limits:
+            cpu: "100m"  # (2 CPU)
       volumes:
       - name: wlp-output
         emptyDir: {}
@@ -312,6 +362,10 @@ spec:
   template:
     metadata:
       annotations:
+        sidecar.istio.io/proxyCPU: "50m"  # CPU request
+#        sidecar.istio.io/proxyMemory: "128Mi"  # Memory request
+        sidecar.istio.io/proxyCPULimit: "100m"  # CPU limit
+#        sidecar.istio.io/proxyMemoryLimit: "256Mi"  # Memory limit
         prometheus.io/scrape: "true"
         prometheus.io/port: "9080"
         prometheus.io/path: "/metrics"
@@ -329,6 +383,11 @@ spec:
         volumeMounts:
         - name: tmp
           mountPath: /tmp
+        resources:
+          requests:
+            cpu: "50m"  # 100 millicores (0.1 CPU)
+          limits:
+            cpu: "100m"  # (2 CPU)
       volumes:
       - name: tmp
         emptyDir: {}

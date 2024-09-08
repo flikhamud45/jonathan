@@ -41,7 +41,7 @@ spec:
         host: productpage
         port:
           number: 9080
-    retries:
-      attempts: 3
-      perTryTimeout: 2s
-      retryOn: "5xx"
+#    retries:
+#      attempts: 3
+#      perTryTimeout: 2s
+#      retryOn: "5xx"

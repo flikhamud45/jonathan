@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: reviews-v3
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 1000
   # this is the default metrics
   metrics:
   - type: Resource
@@ -32,7 +32,7 @@ spec:
       policies:
       - type: Percent
         value: 100
-        periodSeconds: 15
+        periodSeconds: 60
       - type: Pods
         value: 4
         periodSeconds: 60

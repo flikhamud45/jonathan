@@ -1,4 +1,4 @@
-PROJECT_NAME ?= "brave-dimension-430017-i0" # GCP Project name
+PROJECT_NAME ?= "spry-water-434415-u2" # GCP Project name
 DEPLOYMENT_NAME ?= "where-is-my-money" # Deployment name in GCP Deployment Manager
 ZONE ?= "us-central1-c"
 
@@ -19,7 +19,7 @@ create-gke-cluster:
 	gcloud container clusters create $(DEPLOYMENT_NAME) \
 	--zone $(ZONE) \
 	--num-nodes 4 \
-	--machine-type e2-standard-4
+	--machine-type n2-standard-16
 
 kubectx:
 	gcloud container clusters get-credentials $(DEPLOYMENT_NAME) --zone $(ZONE)
@@ -49,10 +49,12 @@ deploy-fortio:
 
 
 deploy-monitoring:
-	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-	helm repo update
-	helm install sm -f ./monitoring-values.yaml prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
-	kubectl apply -f dashboards/
+	kubectl apply -f istio/samples/addons/prometheus.yaml
+	kubectl apply -f istio/samples/addons/grafana.yaml
+#	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+#	helm repo update
+#	helm install sm -f ./monitoring-values.yaml prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+#	kubectl apply -f dashboards/
 
 
 create-gateway:
@@ -71,9 +73,9 @@ deploy-hpa:
 	kubectl apply -f default-details-hpa.yaml
 	kubectl apply -f default-productpage-hpa.yaml
 	kubectl apply -f default-ratings-hpa.yaml
-	kubectl apply -f default-reviews-v1-hpa.yaml
-	kubectl apply -f default-reviews-v2-hpa.yaml
-	kubectl apply -f default-reviews-v3-hpa.yaml
+	kubectl apply -f slow-reviews-v1-hpa.yaml
+	kubectl apply -f slow-reviews-v2-hpa.yaml
+	kubectl apply -f slow-reviews-v3-hpa.yaml
 
 test:
 	bash ./run-http-test.sh

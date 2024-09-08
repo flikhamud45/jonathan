@@ -166,6 +166,11 @@ spec:
             - name: config
               mountPath: "/etc/grafana/provisioning/dashboards/dashboardproviders.yaml"
               subPath: "dashboardproviders.yaml"
+          resources:
+            requests:
+              cpu: "200m"  # 10 millicores (0.01 CPU)
+            limits:
+              cpu: "2"
           ports:
             - name: grafana
               containerPort: 3000

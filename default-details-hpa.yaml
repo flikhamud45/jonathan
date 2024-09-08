@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: details-v1
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 1000
   # this is the default metrics
   metrics:
   - type: Resource

@@ -48,6 +48,7 @@ def main():
     parser.add_argument('--more_time', type=str, default="0s", help='Extra time in seconds to monitor the HPA metrics.')
     parser.add_argument('--output', type=str, default='hpa_metrics', help='Output file to save the plot.')
     parser.add_argument('--save', action='store_true', help='Save the plot to a file.')
+    parser.add_argument('--save_interval', type=str, default="", help='Save the plot every interval.')
     parser.add_argument('--timestemp', action='store_true', help='Add a timestamp to the output file.')
     parser.add_argument('--from_file', type=str, help='Load the HPA metrics from a file.')
     parser.add_argument('--graph_metrics', type=str, default='same', help='Type of graph to draw. Options: separate, together, all')
@@ -57,6 +58,7 @@ def main():
     # Convert interval and total_time to seconds
     args.interval = convert_to_seconds(args.interval)
     args.total_time = convert_to_seconds(args.total_time) + convert_to_seconds(args.more_time)
+    args.save_interval = convert_to_seconds(args.save_interval) if args.save_interval else None
 
     # Store data over time
     time_intervals = []
@@ -79,8 +81,13 @@ def main():
             cpu_data = data['cpu']
     else:
         try:
+            if args.save_interval:
+                with open("online_metrics.json", 'w') as f:
+                    f.write("{")
+            previous_time_for_save = start_time
+            info_since_last_save = {}
             while time.time() - start_time < args.total_time:
-                current_time = time.time() - start_time
+                current_time = time.time()
                 time_intervals.append(current_time)
                 hpa_metrics = get_hpa_metrics()
                 
@@ -88,6 +95,15 @@ def main():
                     replica_data[hpa_name].append(metric['replicas'])
                     cpu_data[hpa_name].append(metric['cpu'])
                 
+                if args.save_interval:
+                    info_since_last_save[int(current_time)] = hpa_metrics
+                    if current_time - previous_time_for_save >= args.save_interval:
+                        with open("online_metrics.json", 'a') as f:
+                            print("Saving data")
+                            f.write("," + json.dumps(info_since_last_save)[1:-1])
+                        previous_time_for_save = current_time
+                        info_since_last_save = {}
+
                 # Sleep for the remaining time
                 time_to_sleep = previous_time + args.interval - time.time()
                 if time_to_sleep > 0:
@@ -102,6 +118,11 @@ def main():
     if args.save:
         with open(args.output + '.json', 'w') as f:
             json.dump({'time': time_intervals, 'replicas': replica_data, 'cpu': cpu_data}, f)
+
+    if args.save_interval:
+        with open("online_metrics.json", 'a') as f:
+            f.write("}")
+
 
     if (args.graph_metrics == 'together' or args.graph_metrics == 'all') and (args.graph_services == 'together' or args.graph_services == 'all'):
         # Plot the results

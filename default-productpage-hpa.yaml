@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: productpage-v1
   minReplicas: 4
-  maxReplicas: 200
+  maxReplicas: 1000
   # this is the default metrics
   metrics:
   - type: Resource

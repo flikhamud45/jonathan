@@ -9,7 +9,16 @@ spec:
   - route:
     - destination:
         host: reviews
+        subset: v1
+      weight: 34
+    - destination:
+        host: reviews
         subset: v2
+      weight: 33
+    - destination:
+        host: reviews
+        subset: v3
+      weight: 34
     retries:
       attempts: 5
       perTryTimeout: 2s
