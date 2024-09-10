@@ -1,4 +1,4 @@
-PROJECT_NAME ?= "spry-water-434415-u2" # GCP Project name
+PROJECT_NAME ?= "lustrous-cubist-435015-d0" # GCP Project name
 DEPLOYMENT_NAME ?= "where-is-my-money" # Deployment name in GCP Deployment Manager
 ZONE ?= "us-central1-c"
 
@@ -18,8 +18,8 @@ gke-login:
 create-gke-cluster:
 	gcloud container clusters create $(DEPLOYMENT_NAME) \
 	--zone $(ZONE) \
-	--num-nodes 4 \
-	--machine-type n2-standard-16
+	--num-nodes 2 \
+	--machine-type e2-standard-2
 
 kubectx:
 	gcloud container clusters get-credentials $(DEPLOYMENT_NAME) --zone $(ZONE)
