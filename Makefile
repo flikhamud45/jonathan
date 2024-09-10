@@ -19,7 +19,7 @@ create-gke-cluster:
 	gcloud container clusters create $(DEPLOYMENT_NAME) \
 	--zone $(ZONE) \
 	--num-nodes 2 \
-	--machine-type e2-standard-2
+	--machine-type n2-standard-16
 
 kubectx:
 	gcloud container clusters get-credentials $(DEPLOYMENT_NAME) --zone $(ZONE)
