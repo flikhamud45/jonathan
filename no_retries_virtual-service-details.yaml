@@ -9,4 +9,5 @@ spec:
   - route:
     - destination:
         host: details
-
+    retries:
+      attempts: 0

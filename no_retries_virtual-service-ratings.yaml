@@ -9,4 +9,5 @@ spec:
   - route:
     - destination:
         host: ratings
-
+    retries:
+      attempts: 0

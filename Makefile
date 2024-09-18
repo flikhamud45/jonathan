@@ -1,4 +1,4 @@
-PROJECT_NAME ?= "lustrous-cubist-435015-d0" # GCP Project name
+PROJECT_NAME ?= "glossy-calculus-395410" # GCP Project name
 DEPLOYMENT_NAME ?= "where-is-my-money" # Deployment name in GCP Deployment Manager
 ZONE ?= "us-central1-c"
 
@@ -18,7 +18,7 @@ gke-login:
 create-gke-cluster:
 	gcloud container clusters create $(DEPLOYMENT_NAME) \
 	--zone $(ZONE) \
-	--num-nodes 2 \
+	--num-nodes 128 \
 	--machine-type n2-standard-16
 
 kubectx:
@@ -29,7 +29,7 @@ deploy-bookinfo:
 	kubectl apply -f istio/samples/bookinfo/platform/kube/bookinfo.yaml
 
 deploy-istio:
-	kubectl get crd gateways.gateway.networking.k8s.io &> /dev/null || { kubectl kustomize "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.1.0" | kubectl apply -f -; }
+#	kubectl get crd gateways.gateway.networking.k8s.io &> /dev/null || { kubectl kustomize "github.com/kubernetes-sigs/gateway-api/config/crd?ref=v1.1.0" | kubectl apply -f -; }
 	./istio/bin/istioctl install
 
 
@@ -69,6 +69,11 @@ deploy-retries:
 	kubectl apply -f virtual-service-ratings.yaml
 	kubectl apply -f virtual-service-details.yaml
 
+deploy-no-retries:
+	kubectl apply -f no_retries_virtual-service-reviews.yaml
+	kubectl apply -f no_retries_virtual-service-ratings.yaml
+	kubectl apply -f no_retries_virtual-service-details.yaml
+
 deploy-hpa:
 	kubectl apply -f default-details-hpa.yaml
 	kubectl apply -f default-productpage-hpa.yaml
@@ -76,6 +81,19 @@ deploy-hpa:
 	kubectl apply -f slow-reviews-v1-hpa.yaml
 	kubectl apply -f slow-reviews-v2-hpa.yaml
 	kubectl apply -f slow-reviews-v3-hpa.yaml
+
+deploy-very-slow-hpa:
+	kubectl apply -f default-details-hpa.yaml
+	kubectl apply -f default-productpage-hpa.yaml
+	kubectl apply -f default-ratings-hpa.yaml
+	kubectl apply -f very-slow-reviews-v1-hpa.yaml
+	kubectl apply -f very-slow-reviews-v2-hpa.yaml
+	kubectl apply -f very-slow-reviews-v3-hpa.yaml
+
+deploy-solution:
+	kubectl create ns controller
+	kubectl apply -f python_controller.yaml
+
 
 test:
 	bash ./run-http-test.sh

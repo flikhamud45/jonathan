@@ -1,0 +1,14 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: operator
+spec:
+  meshConfig:
+    defaultConfig:
+      proxyStatsMatcher:
+        inclusionRegexps:
+          - ".*outlier_detection.*"
+          - ".*upstream_rq_retry.*"
+          - ".*upstream_cx_.*"
+        inclusionSuffixes:
+          - "upstream_rq_timeout"

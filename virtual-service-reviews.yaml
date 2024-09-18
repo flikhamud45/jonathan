@@ -22,4 +22,4 @@ spec:
     retries:
       attempts: 5
       perTryTimeout: 2s
-      retryOn: "5xx"
+      retryOn: 5xx,reset
